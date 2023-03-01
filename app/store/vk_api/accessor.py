@@ -26,10 +26,10 @@ class VkApiAccessor(BaseAccessor):
 
     async def connect(self, app: "Application"):
         self.session = ClientSession(connector=TCPConnector(verify_ssl=False))
-        try:
-            await self._get_long_poll_service()
-        except Exception as e:
-            self.logger.error("Exception", exc_info=e)
+        # try:
+        #     await self._get_long_poll_service()
+        # except Exception as e:
+        #     self.logger.error("Exception", exc_info=e)
         self.poller = Poller(app.store)
         self.logger.info("start polling")
         await self.poller.start()
@@ -49,9 +49,6 @@ class VkApiAccessor(BaseAccessor):
         return url
 
     async def _get_long_poll_service(self):
-        async with self.session.get(f"https://api.telegram.org/bot{self.app.config.bot.telegram_token}/get_Updates") as resp:
-            data = (await resp.json())
-            print("это дата телеграм бота", data)
         url = self._build_query(
                 host=API_PATH,
                 method="groups.getLongPollServer",
@@ -81,7 +78,7 @@ class VkApiAccessor(BaseAccessor):
                     "act": "a_check",
                     "key": self.key,
                     "ts": self.ts,
-                    "wait": 30,
+                    "wait": 1,
                 },
             )
         ) as resp:
@@ -102,6 +99,10 @@ class VkApiAccessor(BaseAccessor):
                             ),
                         )
                     )
+        async with self.session.get(
+                f"https://api.telegram.org/bot{self.app.config.bot.telegram_token}/getUpdates") as resp:
+            data = (await resp.json())
+            print("это дата телеграм бота", data)
         return updates 
         # await self.app.store.bots_manager.handle_updates(updates)
                 
