@@ -57,7 +57,7 @@ def setup_config(app: "Application", config_path: str):
         ),
         bot=BotConfig(
             token=raw_config["bot"]["token"],
-            telegram_token = raw_config["bot"]["telegram_token"],
+            telegram_token=raw_config["bot"]["telegram_token"],
             group_id=raw_config["bot"]["group_id"],
         ),
         database=DatabaseConfig(**raw_config["database"]),
